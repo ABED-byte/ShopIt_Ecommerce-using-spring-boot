@@ -16,16 +16,18 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @Slf4j
+@EnableWebSecurity
 public class WebSecurity  {
 
 
 
    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    return http.sessionManagement(sesConfig -> sesConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+    return http
+            .csrf(csrf -> csrf.disable()).
+            sessionManagement(sesConfig -> sesConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/auth/**").permitAll().anyRequest().authenticated())
-            .csrf(csrf -> csrf.disable())
             .build();
 
 }

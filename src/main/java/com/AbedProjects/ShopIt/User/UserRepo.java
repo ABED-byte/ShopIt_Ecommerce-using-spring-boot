@@ -5,8 +5,12 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Repository;
 
-@Repository
-public interface UserRepo extends JpaRepository<User,Integer> {
+import java.util.Optional;
 
-    public User findByUsername(String username);
+@Repository
+public interface UserRepo extends JpaRepository<UserEntity,Integer> {
+
+
+     Optional<UserEntity> findByUsername(String username);
+
 }

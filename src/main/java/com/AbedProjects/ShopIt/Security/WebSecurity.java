@@ -27,7 +27,8 @@ public class WebSecurity  {
             .csrf(csrf -> csrf.disable()).
             sessionManagement(sesConfig -> sesConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/auth/**").permitAll().anyRequest().authenticated())
+                    .requestMatchers("/auth/**").permitAll().
+                    requestMatchers("/admin/**").hasRole("ADMIN").anyRequest().authenticated())
             .build();
 
 }

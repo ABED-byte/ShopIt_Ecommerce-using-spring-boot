@@ -23,15 +23,15 @@ public class ProductEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String ProductName;
+    private String productName;
 
-    private String ProductDescription;
+    private String productDescription;
 
-    private BigDecimal ProductPrice;
+    private BigDecimal productPrice;
 
-    private Long Stock;
+    private Long stock;
 
-    private String Category;
+    private String category;
 
     private Boolean isActive;
 

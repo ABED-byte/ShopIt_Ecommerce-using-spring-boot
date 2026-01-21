@@ -14,17 +14,17 @@ import java.math.BigDecimal;
     public class ProductResponseDto {
 
         private Long id;
-        private String Productname;
-        private BigDecimal Productprice;
+        private String productname;
+        private BigDecimal productprice;
         private String category;
-        private String Description;
+        private String description;
 
         public ProductResponseDto(ProductEntity product) {
             this.id = product.getId();
-            this.Productname = product.getProductName();
-            this.Productprice = product.getProductPrice();
+            this.productname = product.getProductName();
+            this.productprice = product.getProductPrice();
             this.category = product.getCategory();
-            this.Description = product.getProductDescription();
+            this.description = product.getProductDescription();
         }
     }
 

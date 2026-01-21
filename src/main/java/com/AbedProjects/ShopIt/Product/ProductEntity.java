@@ -29,8 +29,6 @@ public class ProductEntity {
 
     private BigDecimal productPrice;
 
-    private Long stock;
-
     private String category;
 
     private Boolean isActive;

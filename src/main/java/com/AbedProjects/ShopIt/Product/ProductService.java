@@ -71,4 +71,14 @@ public class ProductService {
         return new ProductResponseDto(product);
     }
 
+    public void deleteProductById(Long id) {
+        ProductEntity product = productRepo.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND,
+                        "Product not found"
+                ));
+
+        productRepo.delete(product);
+    }
+
 }

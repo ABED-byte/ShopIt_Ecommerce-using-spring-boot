@@ -37,6 +37,13 @@ public class ProductController {
         return ResponseEntity.ok(productService.findProductById(id));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @DeleteMapping("/foradmin/deleteproduct/{id}")
+    ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
+        productService.deleteProductById(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @PutMapping("/foradmin/updateproduct")
     ResponseEntity<ProductResponseDto> updateProduct(@Valid @RequestBody ProductRequestDto productRequestDto) {
         return ResponseEntity.ok(productService.updateProduct(productRequestDto));

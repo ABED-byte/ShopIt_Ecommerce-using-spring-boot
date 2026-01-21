@@ -3,6 +3,7 @@ package com.AbedProjects.ShopIt.Order;
 import com.AbedProjects.ShopIt.Dtos.OrderResponseDto;
 import com.AbedProjects.ShopIt.Dtos.PlaceOrderRequestDto;
 import com.AbedProjects.ShopIt.Dtos.OrderItemRequestDto;
+import com.AbedProjects.ShopIt.Dtos.UpdateOrderStatusRequest;
 import com.AbedProjects.ShopIt.OrderItem.OrderItemEntity;
 import com.AbedProjects.ShopIt.Product.ProductEntity;
 import com.AbedProjects.ShopIt.Product.ProductRepo;
@@ -92,10 +93,10 @@ public class OrderService {
         return new OrderResponseDto(order);
     }
 
-    public void updateOrderStatus(Long id, OrderStatus status) {
+    public void updateOrderStatus(Long id, UpdateOrderStatusRequest status) {
         OrderEntity order = orderRepo.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
-        order.setOrderStatus(status);
+        order.setOrderStatus(status.getOrderStatus());
         orderRepo.save(order);
     }
 

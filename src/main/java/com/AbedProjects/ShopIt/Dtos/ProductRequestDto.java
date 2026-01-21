@@ -17,4 +17,5 @@ public class ProductRequestDto {
     private String category;
     private String description;
     private boolean active;
+
 }

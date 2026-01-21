@@ -34,7 +34,7 @@ public class WebSecurity  {
             .csrf(csrf -> csrf.disable()).
             sessionManagement(sesConfig -> sesConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("**/auth/**").permitAll().
+                    .requestMatchers("/auth/**").permitAll().
                     requestMatchers("/foradmin/**").hasRole("ADMIN").anyRequest().authenticated())
             .addFilterBefore(jwtSecurityContextPipeLine, UsernamePasswordAuthenticationFilter.class)
             .build();

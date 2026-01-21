@@ -2,6 +2,7 @@ package com.AbedProjects.ShopIt.Order;
 
 import com.AbedProjects.ShopIt.Dtos.OrderResponseDto;
 import com.AbedProjects.ShopIt.Dtos.PlaceOrderRequestDto;
+import com.AbedProjects.ShopIt.Dtos.UpdateOrderStatusRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -44,10 +45,11 @@ public class OrderController {
 
     // ADMIN only - update status
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/admin/{id}/status")
-    ResponseEntity<Void> updateOrderStatus(@PathVariable Long id, @RequestParam OrderStatus status) {
+    @PutMapping("/admin/{id}")
+    ResponseEntity<Void> updateOrderStatus(@PathVariable Long id, @RequestBody UpdateOrderStatusRequest status) {
         orderService.updateOrderStatus(id, status);
         return ResponseEntity.noContent().build();
+
     }
 }
 

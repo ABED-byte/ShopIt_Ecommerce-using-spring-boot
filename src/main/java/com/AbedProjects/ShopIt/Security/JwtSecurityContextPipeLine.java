@@ -39,6 +39,7 @@ public class JwtSecurityContextPipeLine extends OncePerRequestFilter {
 
         if (requestHeader == null || !requestHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
+            return;
         }
 
          String token = requestHeader.split("Bearer ")[1];

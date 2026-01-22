@@ -16,6 +16,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 
@@ -31,30 +32,37 @@ public class JwtSecurityContextPipeLine extends OncePerRequestFilter {
     @Autowired
     private UserRepo userRepo;
 
+    @Autowired
+    private HandlerExceptionResolver exceptionResolver;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("incoming request{}:",request.getRequestURI());
 
-        final String requestHeader = request.getHeader("Authorization");
+      try {
+          final String requestHeader = request.getHeader("Authorization");
 
-        if (requestHeader == null || !requestHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+          if (requestHeader == null || !requestHeader.startsWith("Bearer ")) {
+              filterChain.doFilter(request, response);
+              return;
+          }
 
-         String token = requestHeader.split("Bearer ")[1];
+          String token = requestHeader.split("Bearer ")[1];
 
-        String username = authUtil.getUsernameFromToken(token);
+          String username = authUtil.getUsernameFromToken(token);
 
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserEntity user = userRepo.findByUsername(username).orElseThrow(() -> new RuntimeException("username not found"));
+          if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+              UserEntity user = userRepo.findByUsername(username).orElseThrow(() -> new RuntimeException("username not found"));
 
-            SecurityContextHolder.getContext().
-                    setAuthentication(new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities()));
-        }
+              SecurityContextHolder.getContext().
+                      setAuthentication(new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities()));
+          }
 
-        filterChain.doFilter(request, response);
-
+          filterChain.doFilter(request, response);
+      }
+      catch (Exception e) {
+          exceptionResolver.resolveException(request, response, null, e);
+      }
 
     }
 }

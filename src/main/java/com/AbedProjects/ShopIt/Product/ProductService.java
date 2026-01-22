@@ -3,12 +3,12 @@ package com.AbedProjects.ShopIt.Product;
 
 import com.AbedProjects.ShopIt.Dtos.ProductRequestDto;
 import com.AbedProjects.ShopIt.Dtos.ProductResponseDto;
-import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
+import com.AbedProjects.ShopIt.Exception.ResourceNotFoundException;
+import com.AbedProjects.ShopIt.Product.ProductEntity;
+import com.AbedProjects.ShopIt.Product.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,7 +30,7 @@ public class ProductService {
     }
 
     ProductResponseDto findProductById(Long id){
-        ProductEntity productEntity = productRepo.findById(id).orElseThrow(() -> new RuntimeException("product not found"));
+        ProductEntity productEntity = productRepo.findById(id).orElseThrow(() -> new ResourceNotFoundException("product not found"));
 
         return new ProductResponseDto(productEntity);
     }
@@ -53,12 +53,18 @@ public class ProductService {
 
     }
 
+    public void deleteProductById(Long id) {
+        if (!productRepo.existsById(id)) {
+            throw new ResourceNotFoundException("Product not found with id: " + id);
+        }
+        productRepo.deleteById(id);
+    }
+
     @Transactional
     public ProductResponseDto updateProduct(ProductRequestDto dto) {
 
         ProductEntity product = productRepo.findById(dto.getId())
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
+                .orElseThrow(() -> new ResourceNotFoundException(
                         "Product not found"
                 ));
 
@@ -70,15 +76,4 @@ public class ProductService {
         // no save() needed
         return new ProductResponseDto(product);
     }
-
-    public void deleteProductById(Long id) {
-        ProductEntity product = productRepo.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND,
-                        "Product not found"
-                ));
-
-        productRepo.delete(product);
-    }
-
 }

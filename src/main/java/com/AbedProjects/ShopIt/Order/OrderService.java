@@ -4,16 +4,17 @@ import com.AbedProjects.ShopIt.Dtos.OrderResponseDto;
 import com.AbedProjects.ShopIt.Dtos.PlaceOrderRequestDto;
 import com.AbedProjects.ShopIt.Dtos.OrderItemRequestDto;
 import com.AbedProjects.ShopIt.Dtos.UpdateOrderStatusRequest;
+import com.AbedProjects.ShopIt.Exception.BusinessValidationException;
+import com.AbedProjects.ShopIt.Exception.ResourceNotFoundException;
+import com.AbedProjects.ShopIt.Exception.UnauthorizedActionException;
 import com.AbedProjects.ShopIt.OrderItem.OrderItemEntity;
 import com.AbedProjects.ShopIt.Product.ProductEntity;
 import com.AbedProjects.ShopIt.Product.ProductRepo;
 import com.AbedProjects.ShopIt.User.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -33,7 +34,7 @@ public class OrderService {
         UserEntity user = currentUser();
 
         if (dto.getItems() == null || dto.getItems().isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Order must contain items");
+            throw new BusinessValidationException("Order must contain items");
         }
 
         OrderEntity order = OrderEntity.builder()
@@ -44,14 +45,14 @@ public class OrderService {
         BigDecimal total = BigDecimal.ZERO;
         for (OrderItemRequestDto itemDto : dto.getItems()) {
             ProductEntity product = productRepo.findById(itemDto.getProductId())
-                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Product not found: " + itemDto.getProductId()));
+                    .orElseThrow(() -> new ResourceNotFoundException("Product not found: " + itemDto.getProductId()));
 
             if (product.getIsActive() != null && !product.getIsActive()) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product is not active: " + itemDto.getProductId());
+                throw new BusinessValidationException("Product is not active: " + itemDto.getProductId());
             }
 
             if (product.getProductPrice() == null) {
-                throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Product has no price: " + itemDto.getProductId());
+                throw new BusinessValidationException("Product has no price: " + itemDto.getProductId());
             }
 
             BigDecimal priceAtPurchase = product.getProductPrice();
@@ -83,19 +84,19 @@ public class OrderService {
     public OrderResponseDto getOrderById(Long id) {
         UserEntity user = currentUser();
         OrderEntity order = orderRepo.findByIdAndUserId(id, user.getId())
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
         return new OrderResponseDto(order);
     }
 
     public OrderResponseDto getAnyOrderById(Long id) {
         OrderEntity order = orderRepo.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
         return new OrderResponseDto(order);
     }
 
     public void updateOrderStatus(Long id, UpdateOrderStatusRequest status) {
         OrderEntity order = orderRepo.findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Order not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
         order.setOrderStatus(status.getOrderStatus());
         orderRepo.save(order);
     }
@@ -103,10 +104,10 @@ public class OrderService {
     private UserEntity currentUser() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth == null || !(auth.getPrincipal() instanceof UserEntity user)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Unauthorized");
+            throw new UnauthorizedActionException("Unauthorized");
         }
         return user;
-
+        
     }
 }
 

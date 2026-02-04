@@ -1,9 +1,6 @@
 package com.AbedProjects.ShopIt.Product;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -32,5 +29,12 @@ public class ProductEntity {
     private String category;
 
     private Boolean isActive;
+
+    @Column(nullable = false)
+    private int stock = 50;
+
+    @Version
+    private Long version;
+
 
 }

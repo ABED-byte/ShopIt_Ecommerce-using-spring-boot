@@ -34,7 +34,7 @@ public class OrderItemEntity {
     private Long productId;
 
     @Column(nullable = false)
-    private Long quantity;
+    private int quantity;
 
     @Column(nullable = false, precision = 19, scale = 2)
     private BigDecimal priceAtPurchase;

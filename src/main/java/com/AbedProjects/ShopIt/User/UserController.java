@@ -23,6 +23,7 @@ public class UserController {
     {
 
         return new UserProfileResponseDto(user);
+
     }
 
 

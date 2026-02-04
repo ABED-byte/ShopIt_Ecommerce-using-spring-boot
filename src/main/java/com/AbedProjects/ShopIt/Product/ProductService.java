@@ -3,6 +3,7 @@ package com.AbedProjects.ShopIt.Product;
 
 import com.AbedProjects.ShopIt.Dtos.ProductRequestDto;
 import com.AbedProjects.ShopIt.Dtos.ProductResponseDto;
+import com.AbedProjects.ShopIt.Exception.BusinessValidationException;
 import com.AbedProjects.ShopIt.Exception.ResourceNotFoundException;
 import com.AbedProjects.ShopIt.Product.ProductEntity;
 import com.AbedProjects.ShopIt.Product.ProductRepo;
@@ -45,6 +46,7 @@ public class ProductService {
                 .productPrice(dto.getProductprice())
                 .category(dto.getCategory())
                 .isActive(true)
+                .stock(dto.getStock())
                 .build();
 
         ProductEntity save = productRepo.save(product);
@@ -75,5 +77,34 @@ public class ProductService {
 
         // no save() needed
         return new ProductResponseDto(product);
+    }
+
+
+    @Transactional
+    public ProductEntity reduceStock(Long ProductId,int quantity){
+
+        ProductEntity product = productRepo.findById(ProductId).orElseThrow(
+                () -> new BusinessValidationException("Product not found with id: " + ProductId));
+
+        if (quantity <= 0) {
+            throw new BusinessValidationException("Invalid quantity");
+        }
+
+        if (product.getIsActive() != null && !product.getIsActive()) {
+            throw new BusinessValidationException("Product is not active: " );
+        }
+
+        if (product.getProductPrice() == null) {
+            throw new BusinessValidationException("Product has no price: ");
+        }
+
+        if (product.getStock()< quantity){
+            throw new ResourceNotFoundException("out of stock");
+        }
+
+        product.setStock(product.getStock() - quantity);
+
+        return product;
+
     }
 }

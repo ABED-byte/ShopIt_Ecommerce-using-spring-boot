@@ -14,7 +14,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
@@ -33,7 +32,7 @@ public class JwtSecurityContextPipeLine extends OncePerRequestFilter {
     private UserRepo userRepo;
 
     @Autowired
-    private HandlerExceptionResolver exceptionResolver;
+    private HandlerExceptionResolver handlerExceptionResolver;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -61,7 +60,7 @@ public class JwtSecurityContextPipeLine extends OncePerRequestFilter {
           filterChain.doFilter(request, response);
       }
       catch (Exception e) {
-          exceptionResolver.resolveException(request, response, null, e);
+          handlerExceptionResolver.resolveException(request, response, null, e);
       }
 
     }

@@ -10,6 +10,7 @@ import com.AbedProjects.ShopIt.Exception.UnauthorizedActionException;
 import com.AbedProjects.ShopIt.OrderItem.OrderItemEntity;
 import com.AbedProjects.ShopIt.Product.ProductEntity;
 import com.AbedProjects.ShopIt.Product.ProductRepo;
+import com.AbedProjects.ShopIt.Product.ProductService;
 import com.AbedProjects.ShopIt.User.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -29,6 +30,9 @@ public class OrderService {
     @Autowired
     private ProductRepo productRepo;
 
+    @Autowired
+    private ProductService productService;
+
     @Transactional
     public OrderResponseDto placeOrder(PlaceOrderRequestDto dto) {
         UserEntity user = currentUser();
@@ -42,18 +46,12 @@ public class OrderService {
                 .orderStatus(OrderStatus.PENDING)
                 .build();
 
+
+
         BigDecimal total = BigDecimal.ZERO;
         for (OrderItemRequestDto itemDto : dto.getItems()) {
-            ProductEntity product = productRepo.findById(itemDto.getProductId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Product not found: " + itemDto.getProductId()));
-
-            if (product.getIsActive() != null && !product.getIsActive()) {
-                throw new BusinessValidationException("Product is not active: " + itemDto.getProductId());
-            }
-
-            if (product.getProductPrice() == null) {
-                throw new BusinessValidationException("Product has no price: " + itemDto.getProductId());
-            }
+            ProductEntity product =
+            productService.reduceStock(itemDto.getProductId(),itemDto.getQuantity());
 
             BigDecimal priceAtPurchase = product.getProductPrice();
             BigDecimal lineTotal = priceAtPurchase.multiply(BigDecimal.valueOf(itemDto.getQuantity()));

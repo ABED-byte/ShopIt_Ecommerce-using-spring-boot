@@ -16,6 +16,6 @@ public class OrderItemRequestDto {
 
     @NotNull
     @Min(1)
-    private Long quantity;
+    private int quantity;
 }
 

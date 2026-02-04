@@ -101,7 +101,7 @@ public class GlobalExceptionHandler {
         ApiError apiError = ApiError.builder()
                 .timestamp(LocalDateTime.now())
                 .status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .error("Internal Server Error")
+                .error("Internal Server Error Caused")
                 .message(ex.getMessage())
                 .path(request.getRequestURI())
                 .build();

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OrderItemResponseDto {
     private Long productId;
-    private Long quantity;
+    private int quantity;
 
     public OrderItemResponseDto(OrderItemEntity entity) {
         this.productId = entity.getProductId();

@@ -20,6 +20,7 @@ public class RegisterRequestDto {
     private String password;
 
     @NotBlank(message = "email is required")
+    @Email
     private String email;
 
 }

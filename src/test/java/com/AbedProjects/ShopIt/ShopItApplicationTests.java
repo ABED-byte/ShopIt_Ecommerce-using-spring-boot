@@ -10,4 +10,9 @@ class ShopItApplicationTests {
 	void contextLoads() {
 	}
 
+    @Test
+    void TestGetProducts(){
+
+    }
+
 }

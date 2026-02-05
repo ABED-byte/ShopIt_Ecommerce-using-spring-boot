@@ -23,7 +23,7 @@ import java.io.IOException;
 @Slf4j
 @EnableWebSecurity
 @EnableMethodSecurity
-public class JwtSecurityContextPipeLine extends OncePerRequestFilter {
+public class JwtSecurityFilter extends OncePerRequestFilter {
 
     @Autowired
     private AuthUtil authUtil;

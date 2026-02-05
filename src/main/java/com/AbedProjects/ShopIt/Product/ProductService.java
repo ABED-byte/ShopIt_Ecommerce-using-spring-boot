@@ -8,11 +8,17 @@ import com.AbedProjects.ShopIt.Exception.ResourceNotFoundException;
 import com.AbedProjects.ShopIt.Product.ProductEntity;
 import com.AbedProjects.ShopIt.Product.ProductRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import java.util.ArrayList;
 
 @Service
 public class ProductService {
@@ -21,13 +27,12 @@ public class ProductService {
     private ProductRepo productRepo;
 
 
-    List<ProductResponseDto> findAllProducts(){
-        List<ProductEntity> all = productRepo.findAll();
-        List<ProductResponseDto> collect = all.stream().map(product ->
-                new ProductResponseDto(product)).collect(Collectors.toList()
-        );
+    public Page<ProductResponseDto> findAllProducts(int pageNumber, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
+        Page<ProductEntity> productEntities = productRepo.findAll(pageable);
 
-        return collect;
+        return productEntities.map(entity -> new ProductResponseDto(entity));
+
     }
 
     ProductResponseDto findProductById(Long id){

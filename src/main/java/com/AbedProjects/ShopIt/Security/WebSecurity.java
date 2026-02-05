@@ -1,6 +1,5 @@
 package com.AbedProjects.ShopIt.Security;
 
-import com.AbedProjects.ShopIt.User.UserEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -25,7 +24,7 @@ public class WebSecurity  {
 
 
     @Autowired
-    private JwtSecurityContextPipeLine  jwtSecurityContextPipeLine;
+    private JwtSecurityFilter jwtSecurityContextPipeLine;
 
 
    @Bean

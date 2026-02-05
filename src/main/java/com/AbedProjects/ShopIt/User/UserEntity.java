@@ -30,7 +30,6 @@ public class UserEntity implements UserDetails{
         private Long id;
 
         @Column(unique = true, nullable = false)
-        @Email
         private String email;
 
         @Column(unique = true,nullable = false)

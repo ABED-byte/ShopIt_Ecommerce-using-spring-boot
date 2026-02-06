@@ -34,8 +34,15 @@ public class WebSecurity  {
             .csrf(csrf -> csrf.disable()).
             sessionManagement(sesConfig -> sesConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/auth/**").permitAll().
-                    requestMatchers("/foradmin/**").hasRole("ADMIN").anyRequest().authenticated())
+                    .requestMatchers("/auth/**").permitAll()
+                    // allow Swagger / OpenAPI endpoints without authentication
+                    .requestMatchers(
+                            "/v3/api-docs/**",
+                            "/swagger-ui.html",
+                            "/swagger-ui/**"
+                    ).permitAll()
+                    .requestMatchers("/foradmin/**").hasRole("ADMIN")
+                    .anyRequest().authenticated())
             .addFilterBefore(jwtSecurityContextPipeLine, UsernamePasswordAuthenticationFilter.class)
             .build();
 
